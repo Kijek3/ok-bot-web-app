@@ -10,12 +10,14 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class AppComponent {
   title = 'ok-bot-web-app';
-  code: any = null;
-  API_ENDPOINT = 'http://147.135.209.57/api'
-  // REDIRECT_URI = 'http://localhost:4200/'
-  // DISCORD_AUTH = 'https://discord.com/api/oauth2/authorize?client_id=849690251575689226&redirect_uri=http%3A%2F%2Flocalhost%3A4200%2F&response_type=code&scope=identify';
-  REDIRECT_URI = 'https://kijek3.github.io/ok-bot-web-app/'
-  DISCORD_AUTH = 'https://discord.com/api/oauth2/authorize?client_id=849690251575689226&redirect_uri=https%3A%2F%2Fkijek3.github.io%2Fok-bot-web-app%2F&response_type=code&scope=identify'
+  code: string | null = null;
+  userId: string | null = null;
+  userName: string | null = null;
+  API_ENDPOINT = 'http://vps-348e48ae.vps.ovh.net:2900/api'
+  REDIRECT_URI = 'http://localhost:4200/'
+  DISCORD_AUTH = 'https://discord.com/api/oauth2/authorize?client_id=849690251575689226&redirect_uri=http%3A%2F%2Flocalhost%3A4200%2F&response_type=code&scope=identify';
+  // REDIRECT_URI = 'http://vps-348e48ae.vps.ovh.net/'
+  // DISCORD_AUTH = 'https://discord.com/api/oauth2/authorize?client_id=849690251575689226&redirect_uri=http%3A%2F%2Fvps-348e48ae.vps.ovh.net%2F&response_type=code&scope=identify'
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
@@ -31,17 +33,12 @@ export class AppComponent {
   }
 
   discordGetAuthToken() {
-    const data = {
-      "auth_code": this.code
-    };
-    console.log(data);
-    const headers = { 'Content-Type': 'application/json'};
+    const data = `auth_code=${this.code}`;
+    const headers = { 'Content-Type': 'application/x-www-form-urlencoded'};
     this.http.post<any>(`${this.API_ENDPOINT}/login`, data, {headers}).subscribe(resp => {
-      // console.log(resp.access_token);
-      // const headers = { 'Authorization': `Bearer ${resp.access_token}`};
-      // this.http.get<any>(`${this.API_ENDPOINT}/users/@me`, { headers }).subscribe(resp => {
       console.log(resp);
-      // });
+      this.userId = resp.id;
+      this.userName = resp.username;
     });
   }
 }
